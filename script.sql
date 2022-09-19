@@ -1,79 +1,68 @@
 CREATE SCHEMA `ecommerce` ;
 
 CREATE TABLE `ecommerce`.`Clients` (
-  `idClient` INT NOT NULL,
-  `First Name` VARCHAR(45) NULL,
-  `Last Name` VARCHAR(45) NULL,
-  PRIMARY KEY (`idClient`));
-
+  `idClient` int NOT NULL,
+  `First Name` varchar(45) DEFAULT NULL,
+  `Last Name` varchar(45) DEFAULT NULL,
+  `Email` varchar(45) DEFAULT NULL,
+  `Password` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`idClient`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `ecommerce`.`Payment Methods` (
-  `idPaymentMethod` INT NOT NULL,
-  `idClient_pm` INT NULL,
-  `Type` VARCHAR(45) NULL,
-  `Number` INT NULL,
-  `Expiration Date` DATETIME NULL,
+  `idPaymentMethod` int NOT NULL,
+  `idClient_pm` int DEFAULT NULL,
+  `Type` varchar(45) DEFAULT NULL,
+  `Number` int DEFAULT NULL,
+  `Expiration Date` datetime DEFAULT NULL,
   PRIMARY KEY (`idPaymentMethod`),
-  INDEX `idPaymentMethod_idx` (`idPaymentMethod` ASC) VISIBLE,
-  CONSTRAINT `idClient`
-    FOREIGN KEY (`idClient_pm`)
-    REFERENCES `ecommerce`.`Clients` (`idClient`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  KEY `idPaymentMethod_idx` (`idPaymentMethod`),
+  KEY `idClient` (`idClient_pm`),
+  CONSTRAINT `idClient` FOREIGN KEY (`idClient_pm`) REFERENCES `Clients` (`idClient`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `ecommerce`.`Addresses` (
-  `idAddresses` INT NOT NULL,
-  `Addresses_idClient` INT NULL,
-  `Street` VARCHAR(45) NULL,
-  `ZIP Code` VARCHAR(45) NULL,
-  `State/Province` VARCHAR(45) NULL,
-  `Country` VARCHAR(45) NULL,
+  `idAddresses` int NOT NULL,
+  `Addresses_idClient` int DEFAULT NULL,
+  `Street` varchar(45) DEFAULT NULL,
+  `ZIP Code` varchar(45) DEFAULT NULL,
+  `State/Province` varchar(45) DEFAULT NULL,
+  `Country` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idAddresses`),
-  INDEX `idAddresses_idx` (`idAddresses` ASC) VISIBLE,
-  CONSTRAINT `Addresses_idClient`
-    FOREIGN KEY (`Addresses_idClient`)
-    REFERENCES `ecommerce`.`Clients` (`idClient`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  KEY `idAddresses_idx` (`idAddresses`),
+  KEY `Addresses_idClient` (`Addresses_idClient`),
+  CONSTRAINT `Addresses_idClient` FOREIGN KEY (`Addresses_idClient`) REFERENCES `Clients` (`idClient`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `ecommerce`.`Orders` (
-  `idOrder` INT NOT NULL,
-  `order_idClient` INT NULL,
-  `Timestamp` DATETIME NULL,
-  `Total` FLOAT NULL,
+  `idOrder` int NOT NULL,
+  `order_idClient` int DEFAULT NULL,
+  `Timestamp` datetime DEFAULT NULL,
+  `Total` float DEFAULT NULL,
   PRIMARY KEY (`idOrder`),
-  INDEX `order_idClient_idx` (`order_idClient` ASC) VISIBLE,
-  CONSTRAINT `order_idClient`
-    FOREIGN KEY (`order_idClient`)
-    REFERENCES `ecommerce`.`Clients` (`idClient`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  KEY `order_idClient_idx` (`order_idClient`),
+  CONSTRAINT `order_idClient` FOREIGN KEY (`order_idClient`) REFERENCES `Clients` (`idClient`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `ecommerce`.`Products` (
-  `idProducts` INT NOT NULL,
-  `ProductFamily` VARCHAR(45) NULL,
-  `Price` VARCHAR(45) NULL,
-  `Description` VARCHAR(45) NULL,
-  PRIMARY KEY (`idProducts`));
+  `idProducts` int NOT NULL,
+  `Name` varchar(45) DEFAULT NULL,
+  `ProductFamily` varchar(45) DEFAULT NULL,
+  `Price` varchar(45) DEFAULT NULL,
+  `Description` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`idProducts`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-  CREATE TABLE `ecommerce`.`Order Line Items` (
-  `idOrder Line Items` INT NOT NULL,
-  `idOrder_ol` INT NULL,
-  `idProduct_ol` INT NULL,
+CREATE TABLE `ecommerce`.`Order Line Items` (
+  `idOrder Line Items` int NOT NULL,
+  `idOrder_ol` int DEFAULT NULL,
+  `idProduct_ol` int DEFAULT NULL,
   PRIMARY KEY (`idOrder Line Items`),
-  INDEX `idOrder_idx` (`idOrder_ol` ASC) VISIBLE,
-  INDEX `idProduct_idx` (`idProduct_ol` ASC) VISIBLE,
-  CONSTRAINT `idOrder`
-    FOREIGN KEY (`idOrder_ol`)
-    REFERENCES `ecommerce`.`Orders` (`idOrder`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `idProduct`
-    FOREIGN KEY (`idProduct_ol`)
-    REFERENCES `ecommerce`.`Products` (`idProducts`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
-
+  KEY `idOrder_idx` (`idOrder_ol`),
+  KEY `idProduct_idx` (`idProduct_ol`),
+  CONSTRAINT `idOrder` FOREIGN KEY (`idOrder_ol`) REFERENCES `Orders` (`idOrder`),
+  CONSTRAINT `idProduct` FOREIGN KEY (`idProduct_ol`) REFERENCES `Products` (`idProducts`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
